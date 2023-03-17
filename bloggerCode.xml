@@ -1,0 +1,163 @@
+<style>
+      
+body,
+.centered-top-container.sticky {
+	margin-top: 44px;      
+}
+      
+.news-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  font-size: 16px;
+  background: #003262;
+  color: #73c2fb;
+  padding: 10px 32px;
+  display: flex;
+  box-shadow: 0 4px 40px -8px rgb(0, 51, 98);
+  overflow: hidden;
+	font-family: &quot;Poppins&quot;, sans-serif;
+	z-index: 500;
+	word-break: normal
+}
+
+.news-container::after {
+  position: absolute;
+  content: &quot;&quot;;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(transparent, #003262);
+}
+
+.news-container .news-heading {
+  font-weight: bold;
+  padding-right: 20px;
+  margin-right: 20px;
+  border-right: 1px solid #fff;
+}
+
+.news-container .news {
+  position: relative;
+  width: 100%;
+}
+
+.news-container .news-single {
+  color: #fff;
+  text-decoration: none;
+  font-weight: normal;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-8px);
+  transition: all 400ms ease;
+      
+  pointer-events: none;
+}
+
+.news-container .news-single.active {
+  opacity: 1;
+  transform: translateY(0);
+	pointer-events: auto;
+}
+
+      
+    </style>
+    
+<div class='news-container'>
+      <div class='news-heading'>News</div>
+
+      <div class='news'>
+        <!--
+        <a class='news-single active' href='#'>
+          Apple releases new iPhone with 5G capability.
+        </a>
+
+        <a class='news-single' href='#'>
+          Facebook under fire for handling of user data.
+        </a>
+
+        <a class='news-single' href='#'>
+          Tesla unveils new electric car model with longer range.
+        </a>
+
+        <a class='news-single' href='#'>
+          Google introduces new artificial intelligence tools for businesses.
+        </a>
+
+        <a class='news-single' href='#'>
+          Amazon announces plans to expand its drone delivery program.
+        </a>
+		-->
+      </div>
+    </div>
+    
+    
+<script>
+  
+let newsSingleAll;
+const news = document.querySelector(&#39;.news-container .news&#39;);
+let latestPosts = [];
+let currentActive;
+let totalPosts;
+let duration;
+  
+const getLatestPosts = (data) =&gt; {
+	latestPosts = data.feed.entry;
+  
+  	init();
+  	displayPosts();
+}
+  
+const generateTitles = () =&gt; {
+	latestPosts.forEach(p =&gt; {
+  		const a = document.createElement(&#39;a&#39;);
+  		a.classList.add(&#39;news-single&#39;);
+  		a.href = p.link[p.link.length - 1].href;
+  		a.innerHTML = p.title.$t;
+  		news.appendChild(a);
+  	})  
+  
+  	newsSingleAll = document.querySelectorAll(&quot;.news-container .news-single&quot;)
+  	newsSingleAll[0].classList.add(&#39;active&#39;);
+}
+  
+const init = () =&gt; {
+	currentActive = 0;
+  	duration = 3000;
+  	totalPosts = latestPosts.length;
+  
+  	generateTitles();
+}
+
+const removeAllActive = () =&gt; {
+  newsSingleAll.forEach((n) =&gt; {
+    n.classList.remove(&quot;active&quot;);
+  });
+};
+
+const changeNews = () =&gt; {
+  if (currentActive &gt;= totalPosts - 1) {
+    currentActive = 0;
+  } else {
+    currentActive += 1;
+  }
+
+  removeAllActive();
+  newsSingleAll[currentActive].classList.add(&quot;active&quot;);
+};
+
+const displayPosts = () =&gt; {
+	setInterval(changeNews, duration); 
+}
+  
+
+  
+</script>
+    
+    
+<script src='/feeds/posts/default?alt=json-in-script&amp;max-results=5&amp;callback=getLatestPosts'/>
+ 
